@@ -189,8 +189,11 @@ namespace MimeKit {
 		public string FileName {
 			get { return Parameters["filename"]; }
 			set {
-				if (value != null)
-					Parameters["filename"] = value;
+			    if (value != null)
+			    {
+			        Parameters.Remove("filename");
+			        Parameters.Add("filename", value, FormatOptions.Default.MimicOutlook);
+                }
 				else
 					Parameters.Remove ("filename");
 			}

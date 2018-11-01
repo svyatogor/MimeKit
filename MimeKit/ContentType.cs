@@ -186,9 +186,12 @@ namespace MimeKit {
 		public string Charset {
 			get { return Parameters["charset"]; }
 			set {
-				if (value != null)
-					Parameters["charset"] = value;
-				else
+			    if (value != null)
+			    {
+			        Parameters.Remove("charset");
+                    Parameters.Add("charset", value, FormatOptions.Default.MimicOutlook);
+			    }
+			    else
 					Parameters.Remove ("charset");
 			}
 		}
@@ -236,8 +239,11 @@ namespace MimeKit {
 			get { return Parameters["name"]; }
 			set {
 				if (value != null)
-					Parameters["name"] = value;
-				else
+				{
+				    Parameters.Remove("name");
+				    Parameters.Add("name", value, FormatOptions.Default.MimicOutlook);
+				}
+                else
 					Parameters.Remove ("name");
 			}
 		}

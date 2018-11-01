@@ -288,7 +288,7 @@ namespace MimeKit {
 					return;
 
 				if (value == null) {
-					RemoveHeader ("Content-Id");
+					RemoveHeader ("Content-ID");
 					contentId = null;
 					return;
 				}
@@ -302,7 +302,7 @@ namespace MimeKit {
 
 				contentId = mailbox.Address;
 
-				SetHeader ("Content-Id", "<" + contentId + ">");
+				SetHeader ("Content-ID", "<" + contentId + ">");
 			}
 		}
 

@@ -310,27 +310,48 @@ namespace MimeKit {
 			}
 		}
 
-		/// <summary>
-		/// Add the specified attachment.
-		/// </summary>
-		/// <remarks>
-		/// <para>Adds the stream as an attachment, using the specified file name for deducing
-		/// the mime-type by extension and for setting the Content-Location.</para>
-		/// </remarks>
-		/// <returns>The newly added attachment <see cref="MimeEntity"/>.</returns>
-		/// <param name="fileName">The name of the file.</param>
-		/// <param name="stream">The content stream.</param>
-		/// <exception cref="System.ArgumentNullException">
-		/// <para><paramref name="fileName"/> is <c>null</c>.</para>
-		/// <para>-or-</para>
-		/// <para><paramref name="stream"/> is <c>null</c>.</para>
-		/// </exception>
-		/// <exception cref="System.ArgumentException">
-		/// <para>The specified file path is empty.</para>
-		/// <para>-or-</para>
-		/// <para>The stream cannot be read</para>
-		/// </exception>
-		public MimeEntity Add (string fileName, Stream stream)
+        public MimeEntity Add(string fileName, byte[] data, ContentEncoding encoding)
+        {
+            if (fileName == null)
+                throw new ArgumentNullException(nameof(fileName));
+
+            if (fileName.Length == 0)
+                throw new ArgumentException("The specified file path is empty.", nameof(fileName));
+
+            if (data == null)
+                throw new ArgumentNullException(nameof(data));
+
+            using (var stream = new MemoryStream(data, false))
+            {
+                var attachment = CreateAttachment(GetMimeType(fileName), fileName, stream);
+                attachment.ContentTransferEncoding = encoding;
+                attachments.Add(attachment);
+
+                return attachment;
+            }
+        }
+
+        /// <summary>
+        /// Add the specified attachment.
+        /// </summary>
+        /// <remarks>
+        /// <para>Adds the stream as an attachment, using the specified file name for deducing
+        /// the mime-type by extension and for setting the Content-Location.</para>
+        /// </remarks>
+        /// <returns>The newly added attachment <see cref="MimeEntity"/>.</returns>
+        /// <param name="fileName">The name of the file.</param>
+        /// <param name="stream">The content stream.</param>
+        /// <exception cref="System.ArgumentNullException">
+        /// <para><paramref name="fileName"/> is <c>null</c>.</para>
+        /// <para>-or-</para>
+        /// <para><paramref name="stream"/> is <c>null</c>.</para>
+        /// </exception>
+        /// <exception cref="System.ArgumentException">
+        /// <para>The specified file path is empty.</para>
+        /// <para>-or-</para>
+        /// <para>The stream cannot be read</para>
+        /// </exception>
+        public MimeEntity Add (string fileName, Stream stream)
 		{
 			if (fileName == null)
 				throw new ArgumentNullException (nameof (fileName));

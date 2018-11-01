@@ -1093,5 +1093,10 @@ namespace MimeKit {
 
 			return true;
 		}
+
+	    public void Add(string name, string value, bool wrapInQuotes)
+	    {
+	        Add(new Parameter(name, value, wrapInQuotes));
+        }
 	}
 }

@@ -93,7 +93,7 @@ namespace MimeKit {
 		/// Specifies the maximum line length to use when line-wrapping headers.
 		/// </remarks>
 		/// <value>The maximum line length.</value>
-		public int MaxLineLength {
+		public virtual int MaxLineLength {
 			get { return DefaultMaxLineLength; }
 		}
 
@@ -135,6 +135,8 @@ namespace MimeKit {
 		internal byte[] NewLineBytes {
 			get { return NewLineFormats[(int) NewLineFormat]; }
 		}
+
+	    public bool MimicOutlook = true;
 
 		/// <summary>
 		/// Gets the message headers that should be hidden.

@@ -174,7 +174,28 @@ namespace MimeKit {
 			Name = name;
 		}
 
-		/// <summary>
+	    public Parameter(string name, string value, bool wrapInQuotes)
+	    {
+	        if (name == null)
+	            throw new ArgumentNullException(nameof(name));
+
+	        if (name.Length == 0)
+	            throw new ArgumentException("Parameter names are not allowed to be empty.", nameof(name));
+
+	        for (int i = 0; i < name.Length; i++)
+	        {
+	            if (name[i] > 127 || !IsAttr((byte)name[i]))
+	                throw new ArgumentException("Illegal characters in parameter name.", nameof(name));
+	        }
+
+	        Value = value ?? throw new ArgumentNullException(nameof(value));
+	        Name = name;
+	        WrapInQuotes = wrapInQuotes;
+	    }
+
+	    public bool WrapInQuotes { get; set; }
+
+	    /// <summary>
 		/// Gets the parameter name.
 		/// </summary>
 		/// <remarks>
@@ -629,7 +650,7 @@ namespace MimeKit {
 			lineLength++;
 
 			// account for: <SPACE> + <NAME> + "=\"=?<CHARSET>?b?<10 chars>?=\""
-			if (lineLength + Name.Length + charset.Length + 10 + Math.Min (Value.Length, 10) >= options.MaxLineLength) {
+			if (lineLength + Name.Length + charset.Length + 10 + Math.Min (Value.Length, 10) >= options.MaxLineLength || options.MimicOutlook) {
 				builder.Append (options.NewLine);
 				builder.Append ('\t');
 				lineLength = 1;
@@ -669,13 +690,13 @@ namespace MimeKit {
 				EncodeRfc2047 (options, builder, ref lineLength, headerEncoding);
 				break;
 			case EncodeMethod.None:
-				quoted = Value;
+				quoted = WrapInQuotes ? $"\"{Value}\"" : Value;
 				goto default;
 			default:
 				builder.Append (';');
 				lineLength++;
 
-				if (lineLength + 1 + Name.Length + 1 + quoted.Length >= options.MaxLineLength) {
+				if (lineLength + 1 + Name.Length + 1 + quoted.Length >= options.MaxLineLength || options.MimicOutlook) {
 					builder.Append (options.NewLine);
 					builder.Append ('\t');
 					lineLength = 1;
